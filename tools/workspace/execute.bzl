@@ -7,9 +7,7 @@ def path(repo_ctx, additional_search_paths = []):
 
     # N.B. Ensure ${PATH} in each platform `tools/*.bazelrc` matches these
     # paths.
-    if repo_ctx.os.name == "mac os x":
-        search_paths = search_paths + ["/usr/local/bin"]
-    search_paths = search_paths + ["/usr/bin", "/bin"]
+    search_paths = search_paths + ["/usr/local/bin", "/usr/bin", "/bin"]
     return ":".join(search_paths)
 
 def which(repo_ctx, program, additional_search_paths = []):
