@@ -46,7 +46,7 @@ load("@drake//tools/workspace:os.bzl", "determine_os")
 # The supported Python versions should match those listed in both the root
 # CMakeLists.txt and doc/developers.rst.
 _VERSION_SUPPORT_MATRIX = {
-    "ubuntu:18.04": ["3.6"],
+    "ubuntu:18.04": ["3.7"],
     "ubuntu:20.04": ["3.8"],
     "macos": ["3.9"],
 }
