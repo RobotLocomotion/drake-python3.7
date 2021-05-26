@@ -25,7 +25,6 @@ load("@drake//tools/workspace/fmt:repository.bzl", "fmt_repository")
 load("@drake//tools/workspace/gflags:repository.bzl", "gflags_repository")
 load("@drake//tools/workspace/gfortran:repository.bzl", "gfortran_repository")
 load("@drake//tools/workspace/ghc_filesystem:repository.bzl", "ghc_filesystem_repository")  # noqa
-load("@drake//tools/workspace/github3_py:repository.bzl", "github3_py_repository")  # noqa
 load("@drake//tools/workspace/glew:repository.bzl", "glew_repository")
 load("@drake//tools/workspace/glib:repository.bzl", "glib_repository")
 load("@drake//tools/workspace/glx:repository.bzl", "glx_repository")
@@ -75,7 +74,6 @@ load("@drake//tools/workspace/styleguide:repository.bzl", "styleguide_repository
 load("@drake//tools/workspace/suitesparse:repository.bzl", "suitesparse_repository")  # noqa
 load("@drake//tools/workspace/tinyobjloader:repository.bzl", "tinyobjloader_repository")  # noqa
 load("@drake//tools/workspace/tinyxml2:repository.bzl", "tinyxml2_repository")
-load("@drake//tools/workspace/uritemplate_py:repository.bzl", "uritemplate_py_repository")  # noqa
 load("@drake//tools/workspace/voxelized_geometry_tools:repository.bzl", "voxelized_geometry_tools_repository")  # noqa
 load("@drake//tools/workspace/vtk:repository.bzl", "vtk_repository")
 load("@drake//tools/workspace/x11:repository.bzl", "x11_repository")
@@ -141,8 +139,6 @@ def add_default_repositories(excludes = [], mirrors = DEFAULT_MIRRORS):
         gfortran_repository(name = "gfortran")
     if "ghc_filesystem" not in excludes:
         ghc_filesystem_repository(name = "ghc_filesystem", mirrors = mirrors)
-    if "github3_py" not in excludes:
-        github3_py_repository(name = "github3_py", mirrors = mirrors)
     if "glew" not in excludes:
         glew_repository(name = "glew")
     if "glib" not in excludes:
@@ -241,8 +237,6 @@ def add_default_repositories(excludes = [], mirrors = DEFAULT_MIRRORS):
         tinyobjloader_repository(name = "tinyobjloader", mirrors = mirrors)
     if "tinyxml2" not in excludes:
         tinyxml2_repository(name = "tinyxml2")
-    if "uritemplate_py" not in excludes:
-        uritemplate_py_repository(name = "uritemplate_py", mirrors = mirrors)
     if "voxelized_geometry_tools" not in excludes:
         voxelized_geometry_tools_repository(name = "voxelized_geometry_tools", mirrors = mirrors)  # noqa
     if "vtk" not in excludes:

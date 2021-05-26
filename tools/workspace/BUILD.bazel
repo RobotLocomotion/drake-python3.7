@@ -35,7 +35,6 @@ drake_py_binary(
     visibility = ["//visibility:private"],
     deps = [
         ":module_py",
-        "@github3_py",
     ],
 )
 
