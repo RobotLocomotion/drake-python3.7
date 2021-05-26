@@ -67,7 +67,12 @@ drake_py_binary(
     name = "bzlcodestyle",
     srcs = ["bzlcodestyle.py"],
     main = "bzlcodestyle.py",
-    deps = ["@pycodestyle"],
+)
+
+drake_py_binary(
+    name = "pycodestyle",
+    srcs = ["pycodestyle_script.py"],
+    main = "pycodestyle_script.py",
 )
 
 drake_py_library(
