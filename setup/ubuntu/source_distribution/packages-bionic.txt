@@ -35,5 +35,5 @@ openssh-client
 patch
 patchelf
 pkg-config
-python3-all-dev
+python3.7-dev
 zlib1g-dev

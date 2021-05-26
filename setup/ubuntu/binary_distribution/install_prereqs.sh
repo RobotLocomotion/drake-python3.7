@@ -60,6 +60,19 @@ export LC_CTYPE=en_US.UTF-8
 packages=$(cat "${BASH_SOURCE%/*}/packages-${codename}.txt")
 apt-get install --no-install-recommends ${packages}
 
+if [[ "${codename}" == 'bionic' ]]; then
+  python_interpreter=python3.7
+  update-alternatives --install /usr/bin/python3 python3 \
+      "/usr/bin/${python_interpreter}" 100 \
+    --slave /usr/share/man/man1/python3.1.gz python3.1.gz \
+      "/usr/share/man/man1/${python_interpreter}.1.gz" \
+    --slave /usr/bin/python3m python3m "/usr/bin/${python_interpreter}m" \
+    --slave /usr/share/man/man1/python3m.1.gz python3m.1.gz \
+      "/usr/share/man/man1/${python_interpreter}m.1.gz"
+else
+  python_interpreter=python3.8
+fi
+
 apt-get install --no-install-recommends $(cat <<EOF
   ca-certificates
   build-essential
@@ -91,8 +104,10 @@ export PIP_NO_WHEEL=1
 
 wget -qO- https://bootstrap.pypa.io/get-pip.py | python3
 
-python3 -m pip install -c "${BASH_SOURCE%/*}/constraints.txt" setuptools wheel
+"${python_interpreter}" -m pip install \
+  -c "${BASH_SOURCE%/*}/constraints.txt" \
+  setuptools wheel
 
-python3 -m pip install \
+"${python_interpreter}" -m pip install \
   -c "${BASH_SOURCE%/*}/constraints.txt" \
   -r "${BASH_SOURCE%/*}/requirements.txt"

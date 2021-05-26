@@ -84,7 +84,22 @@ fi
 packages=$(cat "${BASH_SOURCE%/*}/packages-${codename}.txt")
 apt-get install --no-install-recommends ${packages}
 
-if [[ "${codename}" == 'focal' ]]; then
+if [[ "${codename}" == 'bionic' ]]; then
+  python_interpreter=python3.7
+  update-alternatives --install /usr/bin/python python \
+      "/usr/bin/${python_interpreter}" 100 \
+    --slave /usr/share/man/man1/python.1.gz python.1.gz \
+      "/usr/share/man/man1/${python_interpreter}.1.gz"
+  update-alternatives --install /usr/bin/python3-config python3-config \
+      "/usr/bin/${python_interpreter}-config" 100 \
+    --slave /usr/share/man/man1/python3-config.1.gz python3-config.1.gz \
+      "/usr/share/man/man1/${python_interpreter}-config.1.gz" \
+    --slave /usr/bin/python3m-config python3m-config \
+      "/usr/bin/${python_interpreter}m-config" \
+    --slave /usr/share/man/man1/python3m-config.1.gz python3m-config.1.gz \
+      "/usr/share/man/man1/${python_interpreter}m-config.1.gz"
+else
+  python_interpreter=python3.8
   # We need a working /usr/bin/python (of any version).  On Bionic it's there
   # by default, but on Focal we have to ask for it.
   if [[ ! -e /usr/bin/python ]]; then
@@ -95,7 +110,7 @@ if [[ "${codename}" == 'focal' ]]; then
 fi
 
 apt-get remove --auto-remove python3-semantic-version
-python3 -m pip install \
+"${python_interpreter}" -m pip install \
   -c "${BASH_SOURCE%/*}/../binary_distribution/constraints.txt" \
   -r "${BASH_SOURCE%/*}/requirements.txt"
 
@@ -108,7 +123,7 @@ if [[ "${with_doc_only}" -eq 1 ]]; then
     python3-sphinx-rtd-theme
 EOF
   )
-  python3 -m pip install \
+  "${python_interpreter}" -m pip install \
     -c "${BASH_SOURCE%/*}/../binary_distribution/constraints.txt" \
     -r "${BASH_SOURCE%/*}/requirements-doc-only.txt"
 fi
@@ -129,7 +144,7 @@ if [[ "${with_test_only}" -eq 1 ]]; then
     python3-uritemplate
 EOF
   )
-  python3 -m pip install \
+  "${python_interpreter}" -m pip install \
     -c "${BASH_SOURCE%/*}/../binary_distribution/constraints.txt" \
     -r "${BASH_SOURCE%/*}/requirements-test-only.txt"
 fi
@@ -138,7 +153,7 @@ if [[ "${with_maintainer_only}" -eq 1 ]]; then
   packages=$(cat "${BASH_SOURCE%/*}/packages-${codename}-maintainer-only.txt")
   apt-get install --no-install-recommends ${packages}
   apt-get remove --auto-remove python3-boto3
-  python3 -m pip install \
+  "${python_interpreter}" -m pip install \
     -c "${BASH_SOURCE%/*}/../binary_distribution/constraints.txt" \
     -r "${BASH_SOURCE%/*}/requirements-maintainer-only.txt"
 fi
