@@ -1,0 +1,8 @@
+lxml
+github3.py
+nbconvert
+nbformat
+pandas
+pycodestyle
+six
+unittest-xml-reporting
