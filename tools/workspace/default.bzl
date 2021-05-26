@@ -17,7 +17,6 @@ load("@drake//tools/workspace/commons_io:repository.bzl", "commons_io_repository
 load("@drake//tools/workspace/csdp:repository.bzl", "csdp_repository")
 load("@drake//tools/workspace/double_conversion:repository.bzl", "double_conversion_repository")  # noqa
 load("@drake//tools/workspace/doxygen:repository.bzl", "doxygen_repository")
-load("@drake//tools/workspace/drake_visualizer:repository.bzl", "drake_visualizer_repository")  # noqa
 load("@drake//tools/workspace/dreal:repository.bzl", "dreal_repository")
 load("@drake//tools/workspace/eigen:repository.bzl", "eigen_repository")
 load("@drake//tools/workspace/expat:repository.bzl", "expat_repository")
@@ -128,8 +127,6 @@ def add_default_repositories(excludes = [], mirrors = DEFAULT_MIRRORS):
         doxygen_repository(name = "doxygen", mirrors = mirrors)
     if "drake_detected_os" not in excludes:
         os_repository(name = "drake_detected_os")
-    if "drake_visualizer" not in excludes:
-        drake_visualizer_repository(name = "drake_visualizer", mirrors = mirrors)  # noqa
     if "dreal" not in excludes:
         dreal_repository(name = "dreal", mirrors = mirrors)
     if "eigen" not in excludes:

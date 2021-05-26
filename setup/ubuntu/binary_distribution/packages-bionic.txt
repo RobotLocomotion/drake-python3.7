@@ -30,10 +30,6 @@ libnlopt0
 libogg0
 libopengl0
 libpng16-16
-libqt5core5a
-libqt5gui5
-libqt5printsupport5
-libqt5widgets5
 libquadmath0
 libsqlite3-0
 libtheora0
