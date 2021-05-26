@@ -1,0 +1,71 @@
+#!/bin/bash
+
+set -euxo pipefail
+
+if [[ "${EUID}" -ne 0 ]]; then
+  echo 'ERROR: This script must be run as root' >&2
+  exit 1
+fi
+
+cat << 'EOF' > /etc/apt/apt.conf.d/drake
+Acquire::Retries "4";
+APT::Get::Assume-Yes "true";
+APT::Install-Recommends "false";
+Dpkg::Options {"--force-confdef"; "--force-confnew"};
+DPkg::Use-Pty "false";
+quiet "1";
+EOF
+
+mkdir -p /home/ubuntu/.config/pip /root/.config/pip
+
+cat << 'EOF' > /root/.config/pip/pip.conf
+[global]
+no-cache-dir = false
+retries = 4
+EOF
+
+cp /root/.config/pip/pip.conf /home/ubuntu/.config/pip/pip.conf
+chown -R ubuntu:ubuntu /home/ubuntu/.config
+
+cat << 'EOF' > /root/.wgetrc
+dns_cache = off
+tries = 4
+verbose = off
+EOF
+
+cp /root/.wgetrc /home/ubuntu/.wgetrc
+chown ubuntu:ubuntu /home/ubuntu/.wgetrc
+
+export DEBIAN_FRONTEND=noninteractive
+
+trap 'set +x; rm -rf /var/cache/apt/archives/*.deb /var/cache/apt/archives/partial/*.deb /var/cache/apt/*.bin /var/lib/apt/lists/* /var/log/apt/*; set -x' EXIT
+apt-get update -qq || (sleep 15; apt-get update -qq)
+
+apt-get dist-upgrade
+
+apt-get install --no-install-recommends xvfb
+
+"${WORKSPACE}/setup/ubuntu/install_prereqs.sh"
+
+cp "${BASH_SOURCE%/*}/git_ssh" "${WORKSPACE_TMP}/git_ssh"
+chmod 0755 "${WORKSPACE_TMP}/git_ssh"
+chown ubuntu:ubuntu "${WORKSPACE_TMP}/git_ssh"
+
+cat << EOF > /home/ubuntu/.bazelrc
+build --cache_test_results=0
+build --config=snopt
+build --discard_analysis_cache=1
+build --jobs=HOST_CPUS*.75
+build --keep_going=1
+build --keep_state_after_build=0
+build --repo_env=GIT_SSH=${WORKSPACE_TMP}/git_ssh
+build --repo_env=SNOPT_PATH=git
+build --repository_cache=
+build --track_incremental_state=0
+build --verbose_failures=1
+EOF
+
+chown ubuntu:ubuntu /home/ubuntu/.bazelrc
+
+mkdir -p /opt/drake
+chown ubuntu:ubuntu /opt/drake

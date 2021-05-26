@@ -1,0 +1,9 @@
+#!/bin/bash
+
+set -euo pipefail
+
+if [ -e "${SSH_PRIVATE_KEY:-}" ]; then
+  exec ssh -i "${SSH_PRIVATE_KEY:-}" -o StrictHostKeyChecking=accept-new  "$@"
+else
+  exec ssh "$@"
+fi

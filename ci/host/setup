@@ -1,0 +1,59 @@
+#!/bin/bash
+
+set -euxo pipefail
+
+export DEBIAN_FRONTEND=noninteractive
+
+trap 'set +x; rm -rf /var/cache/apt/archives/*.deb /var/cache/apt/archives/partial/*.deb /var/cache/apt/*.bin /var/lib/apt/lists/* /var/log/apt/*; set -x' EXIT
+apt-get update -qq || (sleep 15; apt-get update -qq)
+
+apt-get purge --autoremove -o Dpkg::Use-Pty=0 -qy cron unattended-upgrades
+rm -rf /etc/cron.daily/apt-compat /var/log/unattended-upgrades
+
+apt-get dist-upgrade -o Dpkg::Options::=--force-confdef \
+  -o Dpkg::Options::=--force-confnew -o Dpkg::Use-Pty=0 -qy
+
+apt-get install --no-install-recommends -o Dpkg::Options::=--force-confdef \
+  -o Dpkg::Options::=--force-confnew -o Dpkg::Use-Pty=0 -qy \
+    ca-certificates \
+    gnupg \
+    lsb-release \
+    wget
+
+if [[ "$(lsb_release -cs)" == 'bionic' ]]; then
+  apt-get install --no-install-recommends -o Dpkg::Use-Pty=0 -qy \
+    ntp
+else
+  apt-get install --no-install-recommends -o Dpkg::Use-Pty=0 -qy \
+    systemd-timesyncd
+
+  timedatectl set-ntp on
+fi
+
+wget -qO- https://download.docker.com/linux/ubuntu/gpg \
+  | gpg --dearmor -o /etc/apt/trusted.gpg.d/docker.gpg
+
+echo "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" \
+  > /etc/apt/sources.list.d/docker.list
+
+apt-get update -qq || (sleep 15; apt-get update -qq)
+
+apt-get install --no-install-recommends -o Dpkg::Options::=--force-confdef \
+  -o Dpkg::Options::=--force-confnew -o Dpkg::Use-Pty=0 -qy \
+    docker-ce \
+    amazon-ecr-credential-helper
+
+usermod -aG docker ubuntu
+
+mkdir -p /home/ubuntu/.docker
+
+cat << 'EOF' > /home/ubuntu/.docker/config.json
+{
+  "credHelpers": {
+    "333343588315.dkr.ecr.us-east-1.amazonaws.com": "ecr-login",
+    "public.ecr.aws" : "ecr-login"
+  }
+}
+EOF
+
+chown -R ubuntu:ubuntu /home/ubuntu/.docker

@@ -1,0 +1,10 @@
+#!/bin/bash
+
+set -euxo pipefail
+
+docker build  \
+  -t 333343588315.dkr.ecr.us-east-1.amazonaws.com/drake:ubuntu-18.04 \
+  "${BASH_SOURCE%/*}"
+
+docker scan --accept-license --exclude-base -f "${BASH_SOURCE%/*}/Dockerfile" \
+  333343588315.dkr.ecr.us-east-1.amazonaws.com/drake:ubuntu-18.04
