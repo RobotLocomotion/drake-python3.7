@@ -1,10 +1,5 @@
 cmake
 libstdc++6-7-dbg
 llvm-9
-python3-nbconvert
-python3-nbformat
-python3-pandas
-python3-requests
-python3-six
 valgrind
 valgrind-dbg
