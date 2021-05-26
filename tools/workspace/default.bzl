@@ -47,8 +47,6 @@ load("@drake//tools/workspace/liblz4:repository.bzl", "liblz4_repository")
 load("@drake//tools/workspace/liblzma:repository.bzl", "liblzma_repository")
 load("@drake//tools/workspace/libpng:repository.bzl", "libpng_repository")
 load("@drake//tools/workspace/libtiff:repository.bzl", "libtiff_repository")
-load("@drake//tools/workspace/meshcat:repository.bzl", "meshcat_repository")
-load("@drake//tools/workspace/meshcat_python:repository.bzl", "meshcat_python_repository")  # noqa
 load("@drake//tools/workspace/models:repository.bzl", "models_repository")
 load("@drake//tools/workspace/mosek:repository.bzl", "mosek_repository")
 load("@drake//tools/workspace/net_sf_jchart2d:repository.bzl", "net_sf_jchart2d_repository")  # noqa
@@ -187,10 +185,6 @@ def add_default_repositories(excludes = [], mirrors = DEFAULT_MIRRORS):
         libpng_repository(name = "libpng")
     if "libtiff" not in excludes:
         libtiff_repository(name = "libtiff")
-    if "meshcat" not in excludes:
-        meshcat_repository(name = "meshcat", mirrors = mirrors)
-    if "meshcat_python" not in excludes:
-        meshcat_python_repository(name = "meshcat_python", mirrors = mirrors)
     if "models" not in excludes:
         models_repository(name = "models", mirrors = mirrors)
     if "mosek" not in excludes:
