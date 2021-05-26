@@ -21,7 +21,7 @@ while [ "${1:-}" != "" ]; do
 done
 
 if [[ "${EUID}" -ne 0 ]]; then
-  echo 'ERROR: This script must be run as root' >&2
+  echo 'ERROR: This script must be run as root (sudo -H)' >&2
   exit 1
 fi
 
@@ -48,5 +48,51 @@ if [[ "${codename}" != 'bionic' && "${codename}" != 'focal' ]]; then
   exit 2
 fi
 
+# Ensure that we have available a locale that supports UTF-8 for pip3 install
+# and for generating a C++ header containing Python API documentation during
+# the build.
+apt-get install --no-install-recommends locales
+locale-gen en_US.UTF-8
+
+export LANG=en_US.UTF-8
+export LC_CTYPE=en_US.UTF-8
+
 packages=$(cat "${BASH_SOURCE%/*}/packages-${codename}.txt")
-apt-get install --no-install-recommends build-essential ${packages}
+apt-get install --no-install-recommends ${packages}
+
+apt-get install --no-install-recommends $(cat <<EOF
+  ca-certificates
+  build-essential
+  wget
+EOF
+)
+
+apt-get remove --auto-remove $(cat <<EOF
+  python3-ipython
+  python3-ipywidgets
+  python3-matplotlib
+  python3-notebook
+  python3-numpy
+  python3-pip
+  python3-pydot
+  python3-pygame
+  python3-scipy
+  python3-setuptools
+  python3-tornado
+  python3-u-msgpack
+  python3-wheel
+  python3-yaml
+  python3-zmq
+EOF
+)
+
+export PIP_NO_SETUPTOOLS=1
+export PIP_NO_WHEEL=1
+
+wget -qO- https://bootstrap.pypa.io/get-pip.py | python3
+
+python3 -m pip install -c "${BASH_SOURCE%/*}/constraints.txt" setuptools wheel
+
+python3 -m pip install \
+  -c "${BASH_SOURCE%/*}/constraints.txt" \
+  -r "${BASH_SOURCE%/*}/requirements.txt"

@@ -51,19 +51,16 @@ while [ "${1:-}" != "" ]; do
 done
 
 if [[ "${EUID}" -ne 0 ]]; then
-  echo 'ERROR: This script must be run as root' >&2
+  echo 'ERROR: This script must be run as root (sudo -H)' >&2
   exit 1
 fi
+
+export LANG=en_US.UTF-8
+export LC_CTYPE=en_US.UTF-8
 
 if [[ "${with_update}" -eq 1 && "${binary_distribution_called_update:-0}" -ne 1 ]]; then
   apt-get update || (sleep 30; apt-get update)
 fi
-
-apt-get install --no-install-recommends $(cat <<EOF
-ca-certificates
-wget
-EOF
-)
 
 codename=$(lsb_release -sc)
 
@@ -87,11 +84,6 @@ fi
 packages=$(cat "${BASH_SOURCE%/*}/packages-${codename}.txt")
 apt-get install --no-install-recommends ${packages}
 
-# Ensure that we have available a locale that supports UTF-8 for generating a
-# C++ header containing Python API documentation during the build.
-apt-get install --no-install-recommends locales
-locale-gen en_US.UTF-8
-
 if [[ "${codename}" == 'focal' ]]; then
   # We need a working /usr/bin/python (of any version).  On Bionic it's there
   # by default, but on Focal we have to ask for it.
@@ -102,9 +94,23 @@ if [[ "${codename}" == 'focal' ]]; then
   fi
 fi
 
+apt-get remove --auto-remove python3-semantic-version
+python3 -m pip install \
+  -c "${BASH_SOURCE%/*}/../binary_distribution/constraints.txt" \
+  -r "${BASH_SOURCE%/*}/requirements.txt"
+
 if [[ "${with_doc_only}" -eq 1 ]]; then
   packages=$(cat "${BASH_SOURCE%/*}/packages-${codename}-doc-only.txt")
   apt-get install --no-install-recommends ${packages}
+  apt-get remove --auto-remove $(cat <<EOF
+    python3-docutils
+    python3-sphinx
+    python3-sphinx-rtd-theme
+EOF
+  )
+  python3 -m pip install \
+    -c "${BASH_SOURCE%/*}/../binary_distribution/constraints.txt" \
+    -r "${BASH_SOURCE%/*}/requirements-doc-only.txt"
 fi
 
 if [[ "${with_test_only}" -eq 1 ]]; then
@@ -112,11 +118,29 @@ if [[ "${with_test_only}" -eq 1 ]]; then
   # Suppress Python 3.8 warnings when installing python3-pandas on Focal.
   PYTHONWARNINGS=ignore::SyntaxWarning \
     apt-get install --no-install-recommends ${packages}
+  apt-get remove --auto-remove $(cat <<EOF
+    python3-dateutil
+    python3-jwcrypto
+    python3-lxml
+    python3-nbconvert
+    python3-nbformat
+    python3-pandas
+    python3-pycodestyle
+    python3-uritemplate
+EOF
+  )
+  python3 -m pip install \
+    -c "${BASH_SOURCE%/*}/../binary_distribution/constraints.txt" \
+    -r "${BASH_SOURCE%/*}/requirements-test-only.txt"
 fi
 
 if [[ "${with_maintainer_only}" -eq 1 ]]; then
   packages=$(cat "${BASH_SOURCE%/*}/packages-${codename}-maintainer-only.txt")
   apt-get install --no-install-recommends ${packages}
+  apt-get remove --auto-remove python3-boto3
+  python3 -m pip install \
+    -c "${BASH_SOURCE%/*}/../binary_distribution/constraints.txt" \
+    -r "${BASH_SOURCE%/*}/requirements-maintainer-only.txt"
 fi
 
 dpkg_install_from_wget() {
