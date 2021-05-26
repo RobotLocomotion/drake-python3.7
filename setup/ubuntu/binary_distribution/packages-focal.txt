@@ -3,7 +3,6 @@ coinor-libcoinutils3v5
 coinor-libipopt1v5
 default-jre
 graphviz
-jupyter-notebook
 libamd2
 libblas3
 libbz2-1.0
@@ -43,11 +42,4 @@ libxt6
 libyaml-cpp-dev
 ocl-icd-libopencl1
 python3
-python3-ipywidgets
-python3-lxml
-python3-matplotlib
-python3-numpy
-python3-pydot
-python3-scipy
-python3-yaml
 zlib1g

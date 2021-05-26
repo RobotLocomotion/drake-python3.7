@@ -36,5 +36,4 @@ patch
 patchelf
 pkg-config
 python3-all-dev
-python3-semantic-version
 zlib1g-dev
