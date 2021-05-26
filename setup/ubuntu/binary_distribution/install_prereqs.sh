@@ -48,12 +48,5 @@ if [[ "${codename}" != 'bionic' && "${codename}" != 'focal' ]]; then
   exit 2
 fi
 
-apt-get install --no-install-recommends $(cat <<EOF
-build-essential
-cmake
-pkg-config
-EOF
-)
-
 packages=$(cat "${BASH_SOURCE%/*}/packages-${codename}.txt")
-apt-get install --no-install-recommends ${packages}
+apt-get install --no-install-recommends build-essential ${packages}
