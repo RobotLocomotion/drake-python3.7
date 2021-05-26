@@ -1,9 +1,3 @@
-build:_drd --extra_toolchains=//tools/py_toolchain:linux_dbg_toolchain
-build:_helgrind --extra_toolchains=//tools/py_toolchain:linux_dbg_toolchain
-
-# TODO(jamiesnape): Builds with configuration "memcheck" should also use
-# //tools/py_toolchain:linux_dbg_toolchain.
-
 # Disable python imports from ~/.local (pip -U) during build and test.
 # https://github.com/bazelbuild/bazel/issues/4939
 # https://github.com/RobotLocomotion/drake/issues/8475
