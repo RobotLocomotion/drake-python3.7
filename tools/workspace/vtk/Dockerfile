@@ -30,7 +30,6 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     libnetcdf-dev \
     libogg-dev \
     libpng-dev \
-    libqt5x11extras5-dev \
     libsqlite3-dev \
     libtheora-dev \
     libtiff5-dev \
@@ -38,9 +37,6 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     libxt-dev \
     lsb-release \
     ninja-build \
-    python3-dev \
-    qt5-default \
-    qttools5-dev \
     zlib1g-dev \
   && rm -rf /var/lib/apt/lists/*
 COPY *.patch /vtk-patch/
@@ -53,17 +49,12 @@ RUN mkdir -p /vtk-build /opt/vtk \
   && cmake \
     -DBUILD_TESTING:BOOL=OFF \
     -DCMAKE_BUILD_TYPE:STRING=Release \
-    -DCMAKE_C_FLAGS:STRING='-D_FORTIFY_SOURCE=2 -fstack-protector-strong -Wno-deprecated-declarations' \
-    -DCMAKE_CXX_FLAGS:STRING='-D_FORTIFY_SOURCE=2 -fstack-protector-strong -Wno-deprecated-declarations' \
+    -DCMAKE_C_FLAGS:STRING='-D_FORTIFY_SOURCE=2 -fstack-protector-strong -Wno-deprecated-declarations -Wno-format-overflow' \
+    -DCMAKE_CXX_FLAGS:STRING='-D_FORTIFY_SOURCE=2 -fstack-protector-strong -Wno-deprecated-declarations -Wno-format-overflow' \
     -DCMAKE_EXE_LINKER_FLAGS:STRING='-Wl,-Bsymbolic-functions -Wl,-z,now -Wl,-z,relro' \
     -DCMAKE_INSTALL_PREFIX:PATH=/opt/vtk \
-    -DCMAKE_MODULE_LINKER_FLAGS:STRING='-Wl,-Bsymbolic-functions -Wl,-z,now -Wl,-z,relro' \
     -DCMAKE_SHARED_LINKER_FLAGS:STRING='-Wl,-Bsymbolic-functions -Wl,-z,now -Wl,-z,relro' \
-    -DPYTHON_EXECUTABLE:PATH=/usr/bin/python3 \
-    -DVTK_ENABLE_VTKPYTHON:BOOL=OFF \
-    -DVTK_Group_Qt:BOOL=ON \
     -DVTK_LEGACY_REMOVE:BOOL=ON \
-    -DVTK_QT_VERSION:STRING=5 \
     -DVTK_USE_SYSTEM_DOUBLECONVERSION:BOOL=ON \
     -DVTK_USE_SYSTEM_EIGEN:BOOL=ON \
     -DVTK_USE_SYSTEM_EXPAT:BOOL=ON \
@@ -82,23 +73,14 @@ RUN mkdir -p /vtk-build /opt/vtk \
     -DVTK_USE_SYSTEM_THEORA:BOOL=ON \
     -DVTK_USE_SYSTEM_TIFF:BOOL=ON \
     -DVTK_USE_SYSTEM_ZLIB:BOOL=ON \
-    -DVTK_WRAP_PYTHON:BOOL=ON \
     -GNinja \
     -Wno-dev \
     /vtk \
   && ninja install/strip \
-  && rm -rf /vtk /vtk-build \
-  && sed --in-place \
-    's|VTK_RUNTIME_DIRS "/opt/vtk/bin"|VTK_RUNTIME_DIRS "${VTK_INSTALL_PREFIX}/bin"|g' \
-    /opt/vtk/lib/cmake/vtk-*/VTKConfig.cmake \
-  && sed --in-place \
-    's|VTK_RUNTIME_DIRS "/opt/vtk/lib"|VTK_RUNTIME_DIRS "${VTK_INSTALL_PREFIX}/lib"|g' \
-    /opt/vtk/lib/cmake/vtk-*/VTKConfig.cmake \
-  && sed --in-place \
-    's|/opt/vtk|${_IMPORT_PREFIX}|g' \
-    /opt/vtk/lib/cmake/vtk-*/VTKTargets.cmake \
-  && sed --in-place \
-    's|VTK_PYTHONPATH "/opt/vtk/lib/python3"|VTK_PYTHONPATH "${VTK_INSTALL_PREFIX}/lib/python3"|g' \
-    /opt/vtk/lib/cmake/vtk-*/Modules/vtkPython.cmake
+  && rm -rf \
+    /vtk \
+    /vtk-build \
+    /opt/vtk/lib/cmake \
+    /opt/vtk/share/doc/vtk-8.2/verdict
 RUN cd /opt/vtk \
-  && tar --create --gzip --file vtk-8.2.0-python-$(python3 --version | sed --quiet --expression 's/^.*\n*Python \([0-9]\+\)\.\([0-9]\+\)\.\([0-9]\+\).*/\1.\2.\3/p')-qt-$(qmake --version | sed --quiet --expression 's/^.*\n*Qt version \([0-9]\+\)\.\([0-9]\+\)\.\([0-9]\+\).*/\1.\2.\3/p')-$(lsb_release --codename --short)-x86_64.tar.gz -- *
+  && tar --create --gzip --file vtk-8.2.0-$(lsb_release --codename --short)-x86_64.tar.gz -- *

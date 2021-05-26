@@ -9,8 +9,7 @@ downloaded and unpacked. On macOS, VTK must be installed from the
 robotlocomotion/director tap (https://git.io/vN6ft) using Homebrew.
 
 Archive naming convention:
-    vtk-<version>-embree-<embree version>-ospray-<ospray version>
-        -python-<python version>-qt-<qt version>-<platform>-<arch>[-<rebuild>]
+    vtk-<version>-<platform>-<arch>[-<rebuild>]
 
 Example:
     WORKSPACE:
@@ -102,11 +101,11 @@ def _impl(repository_ctx):
         ), "include")
     elif os_result.is_ubuntu:
         if os_result.ubuntu_release == "18.04":
-            archive = "vtk-8.2.0-python-3.6.9-qt-5.9.5-bionic-x86_64.tar.gz"  # noqa
-            sha256 = "3a4f477b5876777adc016da2147ea42568b7255f889e342d52aca7f441c98e0c"  # noqa
+            archive = "vtk-8.2.0-bionic-x86_64.tar.gz"  # noqa
+            sha256 = "1a0d58df9d6e87bccb82717e4a0642df117710879c2be5be466b4987b5f77503"  # noqa
         elif os_result.ubuntu_release == "20.04":
-            archive = "vtk-8.2.0-python-3.8.5-qt-5.12.8-focal-x86_64.tar.gz"  # noqa
-            sha256 = "1ad84551ba119c02b802183a3d3a3aa7e54e55d217d5b7f84a97adfa7c53616f"  # noqa
+            archive = "vtk-8.2.0-focal-x86_64.tar.gz"  # noqa
+            sha256 = "9fddd381093604aada0acd11670f574698ba88dbe4f07e27e85b6215d9ed1b1c"  # noqa
         else:
             fail("Operating system is NOT supported", attr = os_result)
 
@@ -675,20 +674,18 @@ licenses([
 
     file_content += _vtk_cc_library(repository_ctx.os.name, "vtksys")
 
-    # Glob all files for the data dependency of //tools:drake_visualizer.
-    file_content += """
-filegroup(
-    name = "vtk",
-    srcs = glob(["**/*"], exclude=["BUILD.bazel", "WORKSPACE"]),
-    visibility = ["//visibility:public"],
-)
-"""
-
     if repository_ctx.os.name == "mac os x":
         # Use Homebrew VTK.
         files_to_install = []
     else:
         # Install all files.
+        file_content += """
+filegroup(
+    name = "vtk",
+    srcs = glob(["**/*"], exclude=["BUILD.bazel", "WORKSPACE"]),
+    visibility = ["//visibility:private"],
+)
+"""
         files_to_install = [":vtk"]
 
     file_content += """
