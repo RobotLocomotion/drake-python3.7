@@ -53,7 +53,6 @@ _IGNORED_REPOSITORIES = [
 # tags that share the match with the tag currently in use.  (This can be used
 # to pin to a given major or major.minor release series.)
 _OVERLOOK_RELEASE_REPOSITORIES = {
-    "pycodestyle": "",
     "ros_xacro": r"^(\d+\.\d+\.)",
 }
 

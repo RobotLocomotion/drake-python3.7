@@ -16,10 +16,10 @@ def _python_lint(name_prefix, files, ignore, disallow_executable):
     py_test_isolated(
         name = name_prefix + "_pycodestyle",
         size = "small",
-        srcs = ["@pycodestyle//:pycodestyle"],
+        srcs = ["@drake//tools/lint:pycodestyle"],
         data = files,
         args = ignore_args + locations,
-        main = "@pycodestyle//:pycodestyle.py",
+        main = "@drake//tools/lint:pycodestyle_script.py",
         tags = ["pycodestyle", "lint"],
     )
 

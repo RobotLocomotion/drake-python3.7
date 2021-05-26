@@ -58,7 +58,6 @@ load("@drake//tools/workspace/org_apache_xmlgraphics_commons:repository.bzl", "o
 load("@drake//tools/workspace/osqp:repository.bzl", "osqp_repository")
 load("@drake//tools/workspace/picosat:repository.bzl", "picosat_repository")
 load("@drake//tools/workspace/pybind11:repository.bzl", "pybind11_repository")
-load("@drake//tools/workspace/pycodestyle:repository.bzl", "pycodestyle_repository")  # noqa
 load("@drake//tools/workspace/pycps:repository.bzl", "pycps_repository")
 load("@drake//tools/workspace/python:repository.bzl", "python_repository")
 load("@drake//tools/workspace/qdldl:repository.bzl", "qdldl_repository")
@@ -203,8 +202,6 @@ def add_default_repositories(excludes = [], mirrors = DEFAULT_MIRRORS):
         picosat_repository(name = "picosat", mirrors = mirrors)
     if "pybind11" not in excludes:
         pybind11_repository(name = "pybind11", mirrors = mirrors)
-    if "pycodestyle" not in excludes:
-        pycodestyle_repository(name = "pycodestyle", mirrors = mirrors)
     if "pycps" not in excludes:
         pycps_repository(name = "pycps", mirrors = mirrors)
     if "python" not in excludes:
