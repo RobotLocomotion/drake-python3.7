@@ -163,7 +163,6 @@ def drake_py_binary(
 
 def drake_py_unittest(
         name,
-        deps = None,
         **kwargs):
     """Declares a `unittest`-based python test.
 
@@ -182,9 +181,6 @@ def drake_py_unittest(
         srcs = srcs,
         main = helper,
         allow_import_unittest = True,
-        deps = (deps or []) + [
-            "@xmlrunner_py",
-        ],
         **kwargs
     )
 
