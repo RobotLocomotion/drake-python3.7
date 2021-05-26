@@ -1,3 +1,4 @@
+cmake
 libstdc++6-7-dbg
 llvm-9
 python3-nbconvert

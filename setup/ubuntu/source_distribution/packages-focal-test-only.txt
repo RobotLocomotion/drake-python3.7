@@ -1,3 +1,4 @@
+cmake
 kcov
 libstdc++6-10-dbg
 llvm-9
