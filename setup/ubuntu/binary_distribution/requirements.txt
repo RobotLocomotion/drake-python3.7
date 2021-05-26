@@ -1,0 +1,9 @@
+ipywidgets
+matplotlib
+meshcat
+notebook
+numpy
+pydot
+pygame
+PyYAML
+scipy

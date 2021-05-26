@@ -9,6 +9,7 @@ def _impl(ctx):
         # These are installed in share/drake, but are not runfiles (at least,
         # not with these paths).
         "setup/Brewfile",
+        "setup/constraints.txt",
         "setup/install_prereqs",
         "setup/packages-bionic.txt",
         "setup/packages-focal.txt",

@@ -1,0 +1,3 @@
+docutils
+Sphinx
+sphinx-rtd-theme

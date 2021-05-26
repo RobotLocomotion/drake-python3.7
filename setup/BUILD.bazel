@@ -18,6 +18,8 @@ exports_files([
     "mac/source_distribution/requirements-test-only.txt",
     "ubuntu/binary_distribution/packages-bionic.txt",
     "ubuntu/binary_distribution/packages-focal.txt",
+    "ubuntu/binary_distribution/constraints.txt",
+    "ubuntu/binary_distribution/requirements.txt",
     "ubuntu/source_distribution/packages-bionic.txt",
     "ubuntu/source_distribution/packages-bionic-doc-only.txt",
     "ubuntu/source_distribution/packages-bionic-maintainer-only.txt",
@@ -26,6 +28,10 @@ exports_files([
     "ubuntu/source_distribution/packages-focal-doc-only.txt",
     "ubuntu/source_distribution/packages-focal-maintainer-only.txt",
     "ubuntu/source_distribution/packages-focal-test-only.txt",
+    "ubuntu/source_distribution/requirements-doc-only.txt",
+    "ubuntu/source_distribution/requirements-maintainer-only.txt",
+    "ubuntu/source_distribution/requirements-test-only.txt",
+    "ubuntu/source_distribution/requirements.txt",
 ])
 
 install_files(
@@ -41,6 +47,8 @@ install_files(
             "ubuntu/binary_distribution/install_prereqs.sh",
             "ubuntu/binary_distribution/packages-bionic.txt",
             "ubuntu/binary_distribution/packages-focal.txt",
+            "ubuntu/binary_distribution/constraints.txt",
+            "ubuntu/binary_distribution/requirements.txt",
         ],
         "//conditions:default": [],
     }),
