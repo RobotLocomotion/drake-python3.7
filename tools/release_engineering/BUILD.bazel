@@ -16,9 +16,6 @@ package(default_visibility = ["//visibility:private"])
 drake_py_binary_ubuntu_only(
     name = "relnotes",
     srcs = ["relnotes.py"],
-    deps = [
-        "@github3_py",
-    ],
 )
 
 drake_py_unittest_ubuntu_only(
